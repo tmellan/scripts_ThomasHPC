@@ -1,0 +1,21 @@
+#!/bin/bash -l
+#$ -S /bin/bash
+#$ -N xxNAMExx
+#$ -l mem=24G
+#$ -l tmpfs=24G
+#$ -pe mpi 24
+#$ -l h_rt=12:00:00
+#$ -cwd
+dir=`pwd`
+vaspdir="/home/mmm0011/src/VASP_5.4.4/vasp_5.4.4_stable_6May2017/bin"
+
+echo "VASP_SRC_DIR: "$VASP_SRC_DIR
+echo "JOB_ID is: " $JOB_ID
+
+gerun $vaspdir/vasp_std > out.$JOB_ID
+
+#Debug messages  
+    echo "the date is: " `date`
+    echo "directory is: " `pwd`
+    echo "command is VASP"
+

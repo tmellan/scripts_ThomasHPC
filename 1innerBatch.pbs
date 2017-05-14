@@ -1,0 +1,44 @@
+#!/bin/bash -l
+#$ -S /bin/bash
+#$ -N inner4loop
+#$ -l mem=12G
+#$ -l tmpfs=12G
+#$ -pe mpi 120
+#$ -l h_rt=00:19:00
+#$ -cwd
+
+dir=`pwd`
+vaspdir="/home/mmm0011/src/VASP_5.4.4/vasp_5.4.4_stable_6May2017/bin"
+pwd
+cd $dir
+pwd
+
+#Lets make a script to run 5 set of jobs in parallel each usng 1 node (24 cores), and once the five have all completed, run another five in parallel, then close.
+
+c=-1
+for i in {1..10}; do
+  let c=c+1
+
+  mkdir "test-"$i
+  cd "test-"$i
+  cp ../subSTUFF/* .
+  
+  echo "VASP_SRC_DIR: "$VASP_SRC_DIR
+  echo "JOB_ID is: " $JOB_ID
+  mpirun -n 24 $vaspdir/vasp_std  > out.$JOB_ID &
+#  gerun $vaspdir/vasp_std > out.$JOB_ID
+  
+  if (( $c % 5 == 0 )); then wait ; fi
+
+#Debug messages  
+    echo "the date is: " `date`
+    echo "directory is: " `pwd`
+    echo "command is VASP"
+  cd ../
+done
+wait
+echo DONE
+echo at
+echo `pwd`
+echo in
+echo `date`
